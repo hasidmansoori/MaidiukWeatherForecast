@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Weather {
+    // Вложенные модели, например Condition, можно также оформить в виде внутренних классов или отдельных классов
     public static class Condition {
         public String text;
         public String icon;

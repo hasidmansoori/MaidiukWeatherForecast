@@ -1,73 +1,68 @@
-import React, { useState } from 'react';
-import conditions from './conditions';
+import conditions from './conditions.js';
 
-function WeatherApp() {
-    const [city, setCity] = useState('');
-    const [weather, setWeather] = useState(null);
-    const [error, setError] = useState('');
+console.log(conditions);
 
-    const handleCityInput = (e) => {
-        setCity(e.target.value);
-    };
+const apiKey = 'eb74da4c66234328af9220857240605';
 
-    const handleFormSubmit = async (e) => {
-        e.preventDefault();
-        if (city) {
-            fetchWeather(city);
-        }
-    };
+const header = document.querySelector('.header');
+const form = document.querySelector('#form');
+const input = document.querySelector('#inputCity');
 
-    async function fetchWeather(city) {
-        const url = `/weather/${encodeURIComponent(city)}`;
-        try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error('Network response was not ok: ' + response.statusText);
-            }
-            const data = await response.json();
-            setWeather(data);
-            setError('');
-        } catch (error) {
-            console.error('Fetch error:', error);
-            setError('Failed to fetch weather data: ' + error.message);
-            setWeather(null);
-        }
+function removeCard() {
+	const prevCard = document.querySelector('.card');
+	if (prevCard) prevCard.remove();
+}
+
+function showError(errorMessage) {
+	const html = `<div class="card">${errorMessage}</div>`;
+
+	header.insertAdjacentHTML('afterend', html);
+}
+
+function showCard({ name, country, temp, conditionText, imgPath }) {
+    const html = `<div class="card">
+                                <h2 class="card-city">${name} <span>${country}</span></h2>
+                                <div class="card-weather">
+                                    <div class="card-value">${temp}<sup>°C</sup></div>
+                                    <img class="card-img" src="${imgPath}" alt="Weather icon">
+                                </div>
+                                <div class="card-description">${conditionText}</div>
+                            </div>`;
+    header.insertAdjacentHTML('afterend', html);
+}
+async function getWeather(city, lang='en') {
+    const url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}&lang=${lang}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log(data);
+    return data;
+}
+
+form.onsubmit = async function (e) {
+    e.preventDefault();
+    let city = input.value.trim();
+    const data = await getWeather(city);
+
+    if (data.error) {
+        removeCard();
+        showError(data.error.message);
+    } else {
+        removeCard();
+        const weatherData = {
+            name: data.location.name,
+            country: data.location.country,
+            temp: data.current.temp_c,
+            conditionText: data.current.condition.text, 
+            imgPath: getImgPath(data.current.condition.code, data.current.is_day)
+        };
+
+        showCard(weatherData);
     }
+};
 
-    return (
-        <div>
-            <form id="form" onSubmit={handleFormSubmit}>
-                <input
-                    id="inputCity"
-                    value={city}
-                    onChange={handleCityInput}
-                    placeholder="Enter City"
-                />
-                <button type="submit">Get Weather</button>
-            </form>
-
-            {error && <div className="card">{error}</div>}
-            {weather && (
-                <div className="card">
-                    <h2 className="card-city">{weather.location.name} <span>{weather.location.country}</span></h2>
-                    <div className="card-weather">
-                        <div className="card-value">{weather.current.temp_c}<sup>°C</sup></div>
-                        <WeatherIcon data={weather} />
-                    </div>
-                   <div className="card-description">{weather.current.condition.text}</div>
-                </div>
-            )}
-        </div>
-    );
+function getImgPath(conditionCode, isDay) {
+    const info = conditions.find(obj => obj.code === conditionCode);
+    const dayOrNight = isDay ? 'day' : 'night';
+    const fileName = (isDay ? info.day : info.night) + '.png';
+    return `./img/${dayOrNight}/${fileName}`;
 }
-
-function WeatherIcon({ data }) {
-    const info = conditions.find((obj) => obj.code === data.current.condition.code);
-    const filePath = './img/' + (data.current.is_day ? 'day' : 'night') + '/';
-    const fileName = (data.current.is_day ? info.day : info.night) + '.png';
-    const imgPath = filePath + fileName;
-
-    return <img className="card-img" src={imgPath} alt="Weather icon" />;
-}
-
-export default WeatherApp;
