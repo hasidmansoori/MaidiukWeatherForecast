@@ -1,0 +1,29 @@
+.app-header{
+  padding: 10px;
+  height: 130px;
+  background: linear-gradient(92.7deg, rgb(76, 184, 196) 0%, rgb(60, 211, 173) 100%), rgb(35, 35, 35);
+}
+
+.app-title{
+    margin-bottom: 20px;
+    font-family: 'Rubik';
+    font-weight: 700;
+    font-size: 44px;
+    line-height: 1.18;
+    text-align: center;
+    color: #ffffff;
+}
+
+.search-btn {
+	width: 145px;
+	height: 54px;
+	background: #e5464f;
+	border-radius: 6px; 
+	font-weight: 500;
+	font-size: 20px;
+	line-height: 1;
+	color: #fff;
+  margin-bottom: 24px;
+	transition: background-color 0.2s ease-in;
+  margin-right: 10%;
+} 
