@@ -1,0 +1,4 @@
+{
+  "path": "./config/config.json",
+  "backendURL": "https://localhost:8081/softbiz/api"
+} 
