@@ -1,7 +1,0 @@
-target/
-!**/target/*.jar
-bin/
-.classpath
-.project
-.settings/
-*.class
