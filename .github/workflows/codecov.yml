@@ -1,0 +1,62 @@
+name: CI for Java and Angular with Codecov
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Set up JDK 17 for Java backend
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '17'
+
+      # Build and test Java backend
+      - name: Build and test Java backend
+        run: |
+          cd backend
+          ./gradlew build
+          ./gradlew test
+
+      # Generate test coverage report for Java backend
+      - name: Upload Java backend coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./backend/build/reports/jacoco/test/jacocoTestReport.xml
+          flags: backend
+          name: backend-coverage
+          fail_ci_if_error: true
+
+      # Set up Node.js for Angular frontend
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.13.*'
+
+      # Install dependencies and run tests for Angular frontend
+      - name: Install dependencies and run tests
+        run: |
+          cd frontend
+          npm install
+          npm run test -- --watch=false --code-coverage
+
+      # Upload Angular frontend coverage to Codecov
+      - name: Upload Angular coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./frontend/coverage/lcov.info
+          flags: frontend
+          name: frontend-coverage
+          fail_ci_if_error: true
