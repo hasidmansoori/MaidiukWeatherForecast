@@ -19,6 +19,11 @@
     </properties>
     <dependencies>
 
+        <dependency>
+            <groupId>com.sp</groupId> <!-- Replace with your common project's group ID -->
+            <artifactId>common</artifactId> <!-- Replace with your common project's artifact ID -->
+            <version>0.0.1-SNAPSHOT</version> <!-- Replace with the version of your common project -->
+        </dependency>
 
         <!-- Implementation Dependencies -->
         <dependency>

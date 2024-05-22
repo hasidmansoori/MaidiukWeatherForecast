@@ -22,6 +22,7 @@
           <div class="d-flex flex-row justify-content-start align-items-start app-footer"> 
             <a class="pointer" style="color: white;" *ngIf="paidUserInfo"> {{paidUserInfo?.name}}  /  {{paidUserInfo?.card}}</a>
             <a class="pointer" style="color: white;" data-bs-toggle="modal" data-bs-target="#exampleModal" *ngIf="!paidUserInfo"> Switch to Paid Version</a>
+            <i class="bi bi-box-arrow-right ms-4 pointer" title="Logout" (click)="logout()" *ngIf="paidUserInfo"></i> 
           </div>
         </div>
       </div> 

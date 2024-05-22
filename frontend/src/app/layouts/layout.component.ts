@@ -9,6 +9,8 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { Observable, map, startWith } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { LocationService } from '../modules/shared/services/location.service';
+import { CONSTANTS } from '../modules/shared/helpers/constants';
+import { STORAGE_STRATEGIES } from 'ngx-webstorage';
  
 
 @Component({
@@ -131,7 +133,11 @@ export class AscLayoutComponent implements OnInit {
   } 
   
 
-  ngOnInit(): void {  
+  ngOnInit(): void {
+    this.initialLiseAPP();
+   }  
+
+  initialLiseAPP(){ 
     this.addCardForm = this.fb.group({ 
       name: ['',Validators.required],
       card: ['',Validators.required]
@@ -147,7 +153,7 @@ export class AscLayoutComponent implements OnInit {
     this.myControl.valueChanges.subscribe(value => {
       this.selectedCity = value;
     }); 
-   }  
+  }
 
    private _filter(value: any): string[] {
      const filterValue = value.toLowerCase();
@@ -246,4 +252,19 @@ export class AscLayoutComponent implements OnInit {
     })  
     
   }
+
+  
+  /**
+   * This method is clear Local Storage
+   * @author mehdi.hayyat
+   * @return {void}
+   * @memberof AscAuthService
+   */
+  public logout(): void { 
+    this.localStorage.remove('CARD'); 
+    this.paidCard = null;
+    this.paidUserInfo = null;
+    this.initialLiseAPP();
+  }
+
 }
