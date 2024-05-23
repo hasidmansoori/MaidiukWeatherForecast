@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core'; 
+import { Component, OnInit } from '@angular/core'; 
 import { Router } from '@angular/router'; 
 
 @Component({
@@ -6,10 +6,12 @@ import { Router } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent{ 
-  constructor( 
-    private readonly router: Router 
-  ) { 
+export class AppComponent implements OnInit { 
+  title = 'Weather App';
+
+  constructor(private readonly router: Router) { }
+
+  ngOnInit(): void {
     this.router.navigate(['/']);
-  } 
+  }
 }

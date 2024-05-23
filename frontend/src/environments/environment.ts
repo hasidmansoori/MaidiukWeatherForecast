@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   // backendURL: 'https://localhost:8081/softbiz/api', // when deploy on tomcate 
-  backendURL: 'http://localhost:8181/api' 
+  backendURL: 'http://weather-app-1-env.eba-mzamemss.eu-north-1.elasticbeanstalk.com/api' 
 
 };
 

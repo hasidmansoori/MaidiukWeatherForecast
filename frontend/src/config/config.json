@@ -1,4 +1,4 @@
 {
   "path": "./config/config.json",
-  "backendURL": "https://localhost:8081/softbiz/api"
+  "backendURL": "http://weather-app-1-env.eba-mzamemss.eu-north-1.elasticbeanstalk.com//softbiz/api"
 } 
