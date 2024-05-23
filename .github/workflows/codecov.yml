@@ -22,13 +22,17 @@ jobs:
         run: npm run build
 
       - name: Run tests and collect coverage
-        run: npm run test -- --code-coverage --watch=false
+        run: npm run test -- --code-coverage --watch=false --source-map=false
+
+      - name: Debug test results
+        if: failure()
+        run: cat ./coverage/**/lcov-report/index.html
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage/**/lcov.info
+          files: ./coverage/lcov.info
           flags: unittests
           name: codecov-angular
           fail_ci_if_error: true
