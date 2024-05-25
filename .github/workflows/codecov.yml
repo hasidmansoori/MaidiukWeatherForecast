@@ -38,3 +38,9 @@ jobs:
 
       - name: Run tests
         run: ./mvnw test
+
+      - name: Gather logs on failure
+        if: failure()
+        run: |
+          echo "Build failed. Displaying log files..."
+          find . -name "*.log" | xargs cat
