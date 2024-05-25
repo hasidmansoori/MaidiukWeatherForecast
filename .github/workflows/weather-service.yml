@@ -1,1 +1,64 @@
 
+name: Deploy to AWS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: 12345678
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+
+      - name: Build backend
+        run: ./mvnw clean install
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm install
+          npm run build
+
+      - name: Upload frontend to S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          aws s3 sync ./frontend/dist s3://your-s3-bucket-name --delete
+
+      - name: Deploy backend to Elastic Beanstalk
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          zip -r application.zip .
+          aws s3 cp application.zip s3://your-elastic-beanstalk-bucket/application.zip
+          aws elasticbeanstalk create-application-version --application-name your-app-name --version-label $GITHUB_SHA --source-bundle S3Bucket="your-elastic-beanstalk-bucket",S3Key="application.zip"
+          aws elasticbeanstalk update-environment --environment-name your-env-name --version-label $GITHUB_SHA
