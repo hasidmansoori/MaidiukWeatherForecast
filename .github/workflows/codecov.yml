@@ -39,4 +39,11 @@ jobs:
       - name: Build backend project
         run: mvn install -DskipTests -f backend/pom.xml
 
-      - name: Run test
+      - name: Run tests
+        run: mvn test -f backend/pom.xml
+
+      - name: Gather logs on failure
+        if: failure()
+        run: |
+          echo "Build failed. Displaying log files..."
+          find . -name "*.log" | xargs cat
