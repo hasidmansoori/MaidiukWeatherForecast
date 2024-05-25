@@ -1,0 +1,67 @@
+@import 'https://fonts.googleapis.com/icon?family=Material+Icons';
+@import "../node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css";
+
+@import "primeng/resources/themes/lara-light-blue/theme.css";
+@import "primeng/resources/primeng.css";
+body {
+  font-family: Arial, Helvetica, sans-serif; 
+}
+ 
+.pageLayout{
+  padding-left: 4px !important;
+  padding-right: 4px !important;
+  padding-top: 4px !important;
+  padding-bottom: 20px !important;
+}
+
+.th-primary{
+  color: blue;
+  text-decoration-line: underline;
+  cursor: pointer;
+}
+
+.th-action div{
+  right: 20px;
+  position: absolute;
+}
+
+.th-action i{
+  right: 54px;
+  position: absolute;
+}
+
+.primary-btn{ 
+  background-color: #4f008c !important;
+  &:hover {
+    background-color: white !important;
+    color: #4f008c !important;
+  } 
+ }
+
+.secondary-btn{
+  border:1px solid #4f008c !important;
+  &:hover {
+      background-color: #4f008c !important;
+      color: white !important;
+  } 
+ }
+
+ .primary-bg{
+    background-color: #4f008c !important;
+    color: white !important;
+ }
+ 
+ .secondary-bg{
+    color: #4f008c !important; 
+    background-color: white !important;
+  }
+
+  .primary{
+     color: #4f008c !important; 
+  } 
+  .pointer{
+    cursor: pointer !important; 
+  }
+  mat-form-field{
+    width: 100% !important;
+  }

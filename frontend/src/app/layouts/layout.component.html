@@ -1,0 +1,175 @@
+<div class="app-header">  
+  <section> 
+    <div class="container py-2"> 
+      <div class="row">
+        <div class="col-lg-4">
+          <a [routerLink]="['/']" class="navbar-brand me-auto mb-0 app-title">Weather Forecast</a> 
+        </div>
+        <div class="col-lg-8">
+          <form class="form" id="form"> 
+            <div class="d-flex justify-content-between align-items-center"> 
+              <mat-form-field class="search-input">
+                <input type="text" matInput [formControl]="myControl" [matAutocomplete]="auto" placeholder="Select City">
+                <mat-autocomplete class="input"  #auto="matAutocomplete" title="Select City">
+                  <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                    {{ option }}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>   
+              <button type="submit" class="search-btn" (click)="getWeatherInfo(selectedCity)">Search</button> 
+            </div>
+           </form> 
+          <div class="d-flex flex-row justify-content-start align-items-start app-footer"> 
+            <a class="pointer" style="color: white;" *ngIf="paidUserInfo"> {{paidUserInfo?.name}}  /  {{paidUserInfo?.card}}</a>
+            <a class="pointer" style="color: white;" data-bs-toggle="modal" data-bs-target="#exampleModal" *ngIf="!paidUserInfo"> Switch to Paid Version</a>
+          </div>
+        </div>
+      </div> 
+     </div> 
+  </section> 
+</div>  
+
+<div class="p-2">  
+  <section >
+    <div class="container py-2"> 
+      <div class="row">
+        <div class="col-lg-4" >
+          <div class="card mb-4"  *ngIf="paidCard && paidUserInfo?.favourites">
+            <div class="card-body text-center"> 
+              <div class="card-body p-0" > 
+                <div class="d-flex flex-row justify-content-center align-items-center app-footer"> 
+                  <a class="pointer" style="font-weight: bold;" target="_blank">My Favorite</a>
+                </div>
+
+                <ul class="list-group list-group-flush rounded-3">
+                  <ng-container *ngFor="let fav of paidUserInfo?.favourites?.split(',')">
+                    <li class="list-group-item d-flex justify-content-start align-items-start">  
+                      <a class="pointer" (click)="getWeatherInfo(fav)">{{fav}}</a>
+                    </li> 
+                  </ng-container> 
+                </ul>
+              </div>
+
+            </div>
+          </div> 
+        </div> 
+        <div class="col-lg-8">
+          <div class="card" style="border: none;">
+            <div class="card-body p-0"> 
+              <section >
+                <div class=" h-100">
+                  <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div >
+                      <div class="card" style="border-radius: 15px;">
+                        <div class="card-body p-4 text-black" *ngIf="weatherInfo">
+                          <div>
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                              <h6 class="mb-4">{{weatherInfo?.locationDetails?.name}} / {{weatherInfo?.locationDetails?.region}} / {{weatherInfo?.locationDetails?.country}}</h6>
+                              <button  *ngIf="paidCard" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark btn-rounded btn-sm" style="width: 40%;"
+                                  data-mdb-ripple-color="dark" (click)="addFavorite()">Add to Favorites</button> 
+                            </div>  
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                              <p class="small mb-0"><i class="far fa-clock me-2"></i>{{weatherInfo?.weathers?.current?.localtime}}</p> 
+                              <p class="fw-bold mb-0">{{weatherInfo?.weathers?.current?.temp}}<sup>°C</sup></p>
+                            </div>
+                          </div>
+                          <div class="d-flex align-items-center mb-4">
+                            <div class="flex-shrink-0">
+                              <img [src]="weatherInfo?.weathers?.current?.imgPath"
+                                alt="Generic placeholder image" class="img-fluid rounded-circle border  border-3"
+                                style="width: 70px;">
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                              <div class="d-flex flex-row align-items-center mb-2">
+                                <p class="mb-0 me-2">{{weatherInfo?.weathers?.current?.conditionText}}</p> 
+                              </div>
+                              <div class="row d-flex justify-content-end align-items-end h-100 ng-tns-c149406716-0">
+                                <p class="mb-0">Feels Like  {{weatherInfo?.weathers?.current?.feelLike}}<sup>°C</sup> 
+                                     <span class="ms-4">Wind: {{weatherInfo?.weathers?.current?.wind_kph}} km/h</span>  <span class="ms-4">Humidity: {{weatherInfo?.weathers?.current?.humidity}}%</span> </p>
+                                
+                              </div>
+                            </div>
+                          </div>
+                          <hr> 
+                          <ng-container *ngFor="let weather of weatherInfo?.weathers?.otherDays">
+                            <div> 
+                              <div class="d-flex align-items-center justify-content-between mb-3">
+                                <p class="small mb-0"><i class="far fa-clock me-2"></i>{{weather?.localtime}}</p> 
+                                <p class="fw-bold mb-0">{{weather?.temp}}<sup>°C</sup></p>
+                              </div>
+                            </div>
+                            <div class="d-flex align-items-center mb-4">
+                              <div class="flex-shrink-0">
+                                <img [src]="weather?.imgPath"
+                                  alt="Generic placeholder image" class="img-fluid rounded-circle border  border-3"
+                                  style="width: 70px;">
+                              </div>
+                              <div class="flex-grow-1 ms-3">
+                                <div class="d-flex flex-row align-items-center mb-2">
+                                  <p class="mb-0 me-2">{{weather?.conditionText}}</p> 
+                                </div>
+                                <div class="row d-flex justify-content-end align-items-end h-100 ng-tns-c149406716-0">
+                                  <p class="mb-0">Max/Min Temprature:  {{weather?.tempRange}}<sup>°C</sup> 
+                                       <span class="ms-4">Wind: {{weather?.wind_kph}} km/h</span>  <span class="ms-4">Humidity: {{weather?.humidity}}%</span> </p> 
+                                </div>
+                              </div>
+                            </div>
+                            <hr> 
+                          </ng-container>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+            </div>
+          </div> 
+        </div>
+      </div>
+    </div>
+  </section>
+  
+</div> 
+ 
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Payment Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <form [formGroup]="addCardForm">   
+          <div class="row">
+            <div class="col-md">
+              <mat-form-field class="form-field" appearance="outline" style="width: 100%;">
+                <mat-label> Name </mat-label>
+                <input matInput formControlName="name" >  
+                <mat-error *ngIf="addCardForm?.get('name')?.invalid">
+                  <span>This field is mandatory.</span>
+                </mat-error>
+              </mat-form-field> 
+            </div> 
+          </div>    
+          <div class="row"> 
+            <div class="col-md">
+              <mat-form-field class="form-field" appearance="outline" style="width: 100%;">
+                <mat-label> Card </mat-label>
+                <input matInput formControlName="card" >  
+                <mat-error *ngIf="addCardForm?.get('card')?.invalid">
+                  <span>This field is mandatory.</span>
+                </mat-error>
+              </mat-form-field> 
+            </div>
+          </div>  
+        </form>
+
+      </div>
+      <div class="modal-footer"> 
+        <button type="button" class="btn btn-primary" [disabled]="addCardForm.invalid" data-bs-dismiss="modal" (click)="onSubmit(addCardForm)">Pay $14</button>
+      </div>
+    </div>
+  </div>
+</div>

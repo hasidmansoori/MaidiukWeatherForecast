@@ -1,0 +1,4 @@
+{
+  "path": "./config/config.prod.json",
+  "backendURL": "https://%ADSS_IP_ADDRESS%/softbiz/api"
+}
