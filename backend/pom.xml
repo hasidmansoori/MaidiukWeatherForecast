@@ -19,11 +19,6 @@
     </properties>
     <dependencies>
 
-        <dependency>
-            <groupId>com.sp</groupId> <!-- Replace with your common project's group ID -->
-            <artifactId>common</artifactId> <!-- Replace with your common project's artifact ID -->
-            <version>0.0.1-SNAPSHOT</version> <!-- Replace with the version of your common project -->
-        </dependency>
 
         <!-- Implementation Dependencies -->
         <dependency>
@@ -121,6 +116,11 @@
             <artifactId>jjwt-jackson</artifactId>
             <version>0.11.5</version>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.15.2</version>
         </dependency>
 
         <dependency>
