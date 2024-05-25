@@ -1,34 +1,62 @@
-name: Workflow for Codecov with Angular
+codecov:
+  require_ci_to_pass: yes
+  notify:
+    after_n_builds: 1
 
-on: [push, pull_request]
+coverage:
+  precision: 2
+  round: down
+  range: "70...100"
+  status:
+    project:
+      default:
+        target: 80%
+        threshold: 1%
+    patch:
+      default:
+        target: 80%
+        threshold: 1%
 
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: default
+  require_changes: yes
+
+parsers:
+  js:
+    coverage:
+      override: true
+      parser: "lcov"
+
+fixes:
+  - "frontend/*:src/*"
+
+ignore:
+  - "node_modules"
+  - "test"
+
+flags:
+  frontend:
+    paths:
+      - "src/*"
+
+# GitHub Action for Codecov
 jobs:
-  run:
+  test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v2
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v2
         with:
-          node-version: 18
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build Angular project
-        run: npm run build
-
-      - name: Run tests and collect coverage
-        run: npm run test -- --code-coverage --watch=false
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+          node-version: '14'
+      - run: npm install
+      - run: npm test
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage/**/lcov.info
-          flags: unittests
-          name: codecov-angular
-          fail_ci_if_error: true
+          files: ./coverage/lcov.info
+          flags: frontend
+          name: codecov-frontend
+          directory: ./frontend/src/app/test
