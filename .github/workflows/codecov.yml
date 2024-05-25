@@ -3,11 +3,9 @@ name: Java CI with Maven
 on:
   push:
     branches:
-      - main
       - feature-branch-tests
   pull_request:
     branches:
-      - main
       - feature-branch-tests
 
 jobs:
@@ -27,22 +25,22 @@ jobs:
       - name: Install Maven
         run: sudo apt-get update && sudo apt-get install -y maven
 
-      - name: Navigate to backend directory
-        run: cd backend
-
       - name: Cache Maven packages
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('backend/pom.xml') }}
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Install dependencies
-        run: cd backend && mvn install -DskipTests
+      - name: Build common module
+        run: mvn install -f path/to/common/pom.xml
+
+      - name: Build weather project
+        run: mvn install -DskipTests -f backend/pom.xml
 
       - name: Run tests
-        run: cd backend && mvn test
+        run: mvn test -f backend/pom.xml
 
       - name: Gather logs on failure
         if: failure()
