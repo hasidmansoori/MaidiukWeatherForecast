@@ -36,8 +36,8 @@ jobs:
       - name: Build backend project
         run: mvn install -DskipTests -f backend/pom.xml
 
-      - name: Run tests
-        run: mvn test -f backend/pom.xml
+      - name: Run tests and generate coverage report
+        run: mvn test jacoco:report -f backend/pom.xml
 
       - name: Gather logs on failure
         if: failure()
@@ -52,3 +52,4 @@ jobs:
         run: npx -p check-code-coverage set-gh-status
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        working-directory: backend/target/site/jacoco
