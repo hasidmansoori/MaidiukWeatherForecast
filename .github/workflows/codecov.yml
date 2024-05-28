@@ -44,3 +44,11 @@ jobs:
         run: |
           echo "Build failed. Displaying log files..."
           find . -name "*.log" | xargs cat
+
+      - name: Install check-code-coverage
+        run: npm i -D check-code-coverage
+
+      - name: Set code coverage commit status
+        run: npx -p check-code-coverage set-gh-status
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
