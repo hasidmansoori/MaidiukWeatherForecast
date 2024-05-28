@@ -41,14 +41,16 @@ jobs:
 
       - name: Convert JaCoCo XML to LCOV
         run: |
-          pip install jacoco-lcov
-          jacoco-lcov backend/target/site/jacoco/jacoco.xml coverage/lcov.info
+          git clone https://github.com/t-yuki/gocov-xml.git
+          cd gocov-xml
+          go build
+          ./gocov-xml backend/target/site/jacoco/jacoco.xml > backend/target/site/jacoco/coverage.json
 
       - name: Generate coverage summary
         run: |
           mkdir -p coverage
           genhtml -o coverage --prefix $(pwd) backend/target/site/jacoco/jacoco.xml
-          cp coverage/coverage-summary.json .
+          cp coverage/index.html coverage/coverage-summary.json
 
       - name: Install check-code-coverage
         run: npm i -D check-code-coverage
