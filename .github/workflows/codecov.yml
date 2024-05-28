@@ -22,8 +22,10 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Install Maven
-        run: sudo apt-get update && sudo apt-get install -y maven lcov
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y maven lcov
 
       - name: Cache Maven packages
         uses: actions/cache@v3
@@ -41,16 +43,14 @@ jobs:
 
       - name: Convert JaCoCo XML to LCOV
         run: |
-          git clone https://github.com/t-yuki/gocov-xml.git
-          cd gocov-xml
-          go build
-          ./gocov-xml backend/target/site/jacoco/jacoco.xml > backend/target/site/jacoco/coverage.json
+          git clone https://github.com/linux-testing/lcov.git
+          lcov/bin/lcov --capture --directory . --output-file coverage.info
+          lcov/bin/genhtml --output-directory coverage coverage.info
 
       - name: Generate coverage summary
         run: |
-          mkdir -p coverage
-          genhtml -o coverage --prefix $(pwd) backend/target/site/jacoco/jacoco.xml
-          cp coverage/index.html coverage/coverage-summary.json
+          cd coverage
+          cp index.html coverage-summary.json
 
       - name: Install check-code-coverage
         run: npm i -D check-code-coverage
